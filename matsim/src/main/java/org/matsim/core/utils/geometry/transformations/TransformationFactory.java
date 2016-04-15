@@ -48,6 +48,7 @@ public abstract class TransformationFactory {
 	public final static String NAD83_UTM17N = "NAD83_UTM17N"; //Toronto, Canada
 	public static final String WGS84_TM = "WGS84_TM"; //Singapore3
 	public static final String PCS_ITRF2000_TM_UOS = "PCS_ITRF2000_TM_UOS"; // South Korea - but used by University of Seoul - probably a wrong one...
+	public static final String VN_2000 = "VN_2000"; // Viet nam
 
 	/**
 	 * Returns a coordinate transformation to transform coordinates from one
@@ -63,11 +64,13 @@ public abstract class TransformationFactory {
 		if (WGS84.equals(fromSystem)) {
 			if (CH1903_LV03.equals(toSystem)) return new WGS84toCH1903LV03();
 			if (ATLANTIS.equals(toSystem)) return new WGS84toAtlantis();
+			if (VN_2000.equals(toSystem)) return new WGS84toVN2000();
 		}
 		if (WGS84.equals(toSystem)) {
 			if (CH1903_LV03.equals(fromSystem)) return new CH1903LV03toWGS84();
 			if (GK4.equals(fromSystem)) return new GK4toWGS84();
 			if (ATLANTIS.equals(fromSystem)) return new AtlantisToWGS84();
+			if(VN_2000.equals(fromSystem)) return new VN2000toWGS84();
 		}
 		return new GeotoolsTransformation(fromSystem, toSystem);
 	}

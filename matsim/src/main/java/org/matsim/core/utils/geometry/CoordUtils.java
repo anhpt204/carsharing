@@ -63,19 +63,62 @@ public abstract class CoordUtils {
 		return centerWOffset ;
 	}
 
+//	public static double calcDistance(Coord coord, Coord other) {
+//		//depending on the coordinate system that is used, determining the
+//		//distance based on the euclidean distance will lead to wrong results.
+//		//however, if the distance is not to large (<1km) this will be a usable distance estimation.
+//		//Another comfortable way to calculate correct distances would be, to use the distance functions
+//		//provided by geotools lib. May be we need to discuss what part of GIS functionality we should implement
+//		//by our own and for what part we could use an existing GIS like geotools. We need to discuss this in terms
+//		//of code robustness, performance and so on ... [gl]
+//		double xDiff = other.getX()-coord.getX();
+//		double yDiff = other.getY()-coord.getY();
+//		
+//		return Math.sqrt((xDiff*xDiff) + (yDiff*yDiff));
+//	}
+
 	public static double calcDistance(Coord coord, Coord other) {
-		//depending on the coordinate system that is used, determining the
-		//distance based on the euclidean distance will lead to wrong results.
-		//however, if the distance is not to large (<1km) this will be a usable distance estimation.
-		//Another comfortable way to calculate correct distances would be, to use the distance functions
-		//provided by geotools lib. May be we need to discuss what part of GIS functionality we should implement
-		//by our own and for what part we could use an existing GIS like geotools. We need to discuss this in terms
-		//of code robustness, performance and so on ... [gl]
-		double xDiff = other.getX()-coord.getX();
-		double yDiff = other.getY()-coord.getY();
-		return Math.sqrt((xDiff*xDiff) + (yDiff*yDiff));
+	//depending on the coordinate system that is used, determining the
+	//distance based on the euclidean distance will lead to wrong results.
+	//however, if the distance is not to large (<1km) this will be a usable distance estimation.
+	//Another comfortable way to calculate correct distances would be, to use the distance functions
+	//provided by geotools lib. May be we need to discuss what part of GIS functionality we should implement
+	//by our own and for what part we could use an existing GIS like geotools. We need to discuss this in terms
+	//of code robustness, performance and so on ... [gl]
+//	double xDiff = other.getX()-coord.getX();
+//	double yDiff = other.getY()-coord.getY();
+	
+	double theta = coord.getX() - other.getX();
+    double dist = Math.sin(deg2rad(coord.getY())) * Math.sin(deg2rad(other.getY())) 
+    		+ Math.cos(deg2rad(coord.getY())) * Math.cos(deg2rad(other.getY())) * Math.cos(deg2rad(theta));
+
+    dist = Math.acos(dist);
+    dist = rad2deg(dist);
+    dist = dist * 60 * 1.1515;
+    
+    //convert to meters
+    dist = dist * 1.609344 * 1000;
+    
+//    if (unit == 'K') {
+//      dist = dist * 1.609344;
+//    } else if (unit == 'N') {
+//      dist = dist * 0.8684;
+//      }
+    return (dist);
+	
 	}
 
+	private static double deg2rad(double deg) {
+	      return (deg * Math.PI / 180.0);
+	    }
+
+	    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+	    /*::  This function converts radians to decimal degrees             :*/
+	    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+	    private static double rad2deg(double rad) {
+	      return (rad * 180.0 / Math.PI);
+	    }
+	    
 	/**
 	 * Calculates the shortest distance of a point to a line segment. The line segment
 	 * is given by two points, <code>lineFrom</code> and <code>lineTo</code>. Note that
